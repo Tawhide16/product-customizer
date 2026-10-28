@@ -76,6 +76,8 @@ interface StudioProps {
   onSaveOrderRecord?: (orderData: unknown) => void;
 }
 
+type ToolType = 'text' | 'clipart' | 'qrcode' | 'upload' | 'roster' | 'templates';
+
 export const Studio: React.FC<StudioProps> = ({
   products,
   initialPricingSettings,
@@ -91,9 +93,7 @@ export const Studio: React.FC<StudioProps> = ({
   const activeSide = currentProduct.sides.find((s) => s.id === activeSideId) || currentProduct.sides[0];
 
   // Active Tool Panel
-  const [activeTool, setActiveTool] = useState<
-    'text' | 'clipart' | 'qrcode' | 'upload' | 'roster' | 'templates' | null
-  >('text');
+  const [activeTool, setActiveTool] = useState<ToolType | null>('text');
 
   // Canvas View state
   const [zoom, setZoom] = useState<number>(1.0);
@@ -818,7 +818,7 @@ export const Studio: React.FC<StudioProps> = ({
                       return (
                         <button
                           key={tool.id}
-                          onClick={() => setActiveTool(tool.id as typeof activeTool)}
+                          onClick={() => setActiveTool(tool.id as ToolType)}
                           className="w-full p-2.5 rounded-2xl border border-zinc-100 hover:border-zinc-300 bg-white hover:bg-zinc-50/80 transition-all flex items-center gap-3 text-left shadow-2xs hover:shadow-sm cursor-pointer group"
                         >
                           <div className={`w-9 h-9 rounded-xl ${tool.color} flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform`}>
@@ -955,7 +955,7 @@ export const Studio: React.FC<StudioProps> = ({
                     setIsLayersModalOpen(true);
                   } else {
                     setActivePanelTab('tools');
-                    setActiveTool(activeTool === dockItem.id ? null : (dockItem.id as typeof activeTool));
+                    setActiveTool(activeTool === dockItem.id ? null : (dockItem.id as ToolType));
                   }
                 }}
                 title={dockItem.title}
