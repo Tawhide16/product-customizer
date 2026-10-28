@@ -12,6 +12,58 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "https://product-customizer.vercel.app";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: "Origin | 3D Product Customizer Studio",
+  description:
+    "Customize apparel, t-shirts, hoodies, and merchandise with real-time 3D preview and live Shopify sync.",
+  applicationName: "Origin Studio",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "Origin Studio",
+    title: "Origin | 3D Product Customizer Studio",
+    description:
+      "Customize apparel, t-shirts, hoodies, and merchandise with real-time 3D preview and live Shopify sync.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Origin Logo",
+        type: "image/jpeg",
+      },
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Origin Logo",
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Origin | 3D Product Customizer Studio",
+    description:
+      "Customize apparel, t-shirts, hoodies, and merchandise with real-time 3D preview and live Shopify sync.",
+    images: ["/og-image.jpg"],
+  },
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
+};
+
 
 export default function RootLayout({
   children,
