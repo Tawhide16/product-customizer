@@ -1,69 +1,119 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
+import { CATALOG_PRODUCTS, INITIAL_PRICING_SETTINGS } from '@/data/catalog';
+import { Product, PricingSettings } from '@/types/customizer';
+import { ShopifyPolarisHeader, AppView } from '@/components/ShopifyPolarisHeader';
+import { Studio } from '@/components/StorefrontCustomizer/Studio';
+import { ProductManager } from '@/components/MerchantDashboard/ProductManager';
+import { PricingRulesManager } from '@/components/MerchantDashboard/PricingRulesManager';
+import { OrdersManager } from '@/components/MerchantDashboard/OrdersManager';
+import { IntegrationGuide } from '@/components/MerchantDashboard/IntegrationGuide';
+import { StorefrontSimulator } from '@/components/StorefrontSimulator';
+import { DocsModal } from '@/components/DocsModal';
 
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>(CATALOG_PRODUCTS);
+  const [pricingSettings, setPricingSettings] = useState<PricingSettings>(INITIAL_PRICING_SETTINGS);
+  const [currentView, setCurrentView] = useState<AppView>('customizer');
+  const [isDocsOpen, setIsDocsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+    document.title = "Origin ‑ 3D Product Customizer Studio";
+    const linkId = 'inkybay-customizer-fonts';
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement('link');
+      link.id = linkId;
+      link.rel = 'stylesheet';
+      link.href =
+        'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600&family=Dancing+Script:wght@700&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;600;700;900&family=Oswald:wght@500;700&family=Pacifico&family=Playfair+Display:ital,wght@0,600;1,600&family=Roboto:wght@400;500;700&display=swap';
+      document.head.appendChild(link);
+    }
+  }, []);
+
+  const handleUpdateProduct = (updatedProduct: Product) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+  };
+
+  const handleUpdatePricing = (updatedPricing: PricingSettings) => {
+    setPricingSettings(updatedPricing);
+  };
+
+  if (!mounted) {
+    return (
+      <div suppressHydrationWarning className="flex h-screen w-screen items-center justify-center bg-[#f1f2f4]">
+        <div suppressHydrationWarning className="flex items-center gap-2 text-xs font-semibold text-zinc-600">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+          Loading Origin Customizer...
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+    <div suppressHydrationWarning className="flex flex-col h-screen w-screen overflow-hidden bg-gradient-to-br from-[#f8f9fb] via-[#edf1f7] to-[#e4e9f2]">
+      {/* Shopify Polaris App Header Bar */}
+      <ShopifyPolarisHeader
+        currentView={currentView}
+        onSelectView={setCurrentView}
+        onOpenHelp={() => setIsDocsOpen(true)}
+      />
+
+      {/* Main View Area */}
+      <main className="flex-1 overflow-hidden relative">
+        {currentView === 'customizer' && (
+          <Studio
+            products={products}
+            initialPricingSettings={pricingSettings}
+          />
+        )}
+
+        {currentView === 'storefront' && (
+          <div className="h-full overflow-y-auto p-4 sm:p-8">
+            <StorefrontSimulator
+              product={products[0]}
+              onLaunchCustomizer={() => setCurrentView('customizer')}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          </div>
+        )}
+
+        {currentView === 'catalog' && (
+          <div className="h-full overflow-y-auto p-4 sm:p-8 max-w-7xl mx-auto">
+            <ProductManager
+              products={products}
+              onUpdateProduct={handleUpdateProduct}
+            />
+          </div>
+        )}
+
+        {currentView === 'pricing' && (
+          <div className="h-full overflow-y-auto p-4 sm:p-8 max-w-7xl mx-auto">
+            <PricingRulesManager
+              pricingSettings={pricingSettings}
+              onUpdatePricing={handleUpdatePricing}
+            />
+          </div>
+        )}
+
+        {currentView === 'orders' && (
+          <div className="h-full overflow-y-auto p-4 sm:p-8 max-w-7xl mx-auto">
+            <OrdersManager />
+          </div>
+        )}
+
+        {currentView === 'integration' && (
+          <div className="h-full overflow-y-auto p-4 sm:p-8 max-w-7xl mx-auto">
+            <IntegrationGuide />
+          </div>
+        )}
       </main>
+
+      {/* Architecture & Blueprint Guide Modal */}
+      <DocsModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} />
     </div>
   );
 }
