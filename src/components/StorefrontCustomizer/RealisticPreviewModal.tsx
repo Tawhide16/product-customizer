@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Product, ProductColor, ProductSide, DesignElement } from '@/types/customizer';
 import { ProductMockupSvg } from '@/components/Mockups/ProductMockupSvg';
+import { ProductSurfaceOverlay } from '@/components/Mockups/ProductSurfaceOverlay';
 import { X, Download, Share2, Check, Sparkles } from 'lucide-react';
 
 interface RealisticPreviewModalProps {
@@ -137,6 +138,9 @@ export const RealisticPreviewModal: React.FC<RealisticPreviewModalProps> = ({
                     </div>
                   );
                 })}
+
+              {/* Realistic Material Lighting & Crease Overlay */}
+              <ProductSurfaceOverlay mockupKey={activeSide.mockupSvg} isDarkProduct={activeColor.dark} />
             </div>
           </div>
         </div>

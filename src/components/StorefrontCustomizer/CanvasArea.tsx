@@ -3,6 +3,7 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { DesignElement, Product, ProductSide, ProductColor, TextElement, ClipartElement, ImageElement, QRCodeElement, RosterElement } from '@/types/customizer';
 import { ProductMockupSvg } from '@/components/Mockups/ProductMockupSvg';
+import { ProductSurfaceOverlay } from '@/components/Mockups/ProductSurfaceOverlay';
 import { ZoomIn, ZoomOut, Maximize2, Eye, EyeOff, RotateCw, Trash2, Copy, Move, AlertTriangle } from 'lucide-react';
 
 interface CanvasAreaProps {
@@ -506,6 +507,9 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
                 </div>
               );
             })}
+
+          {/* Realistic Product Surface Shading & Material Lighting Overlay */}
+          <ProductSurfaceOverlay mockupKey={activeSide.mockupSvg} isDarkProduct={activeColor.dark} />
         </div>
       </div>
     </div>
@@ -554,7 +558,9 @@ const RenderTextElement: React.FC<{ element: TextElement }> = ({ element }) => {
           stroke={strokeColor || 'none'}
           strokeWidth={strokeWidth ? strokeWidth * 0.5 : 0}
           style={{
-            filter: shadowColor ? `drop-shadow(2px 2px ${shadowBlur || 2}px ${shadowColor})` : undefined,
+            filter: shadowColor
+              ? `drop-shadow(2px 2px ${shadowBlur || 2}px ${shadowColor})`
+              : 'drop-shadow(0 0.5px 0.75px rgba(0,0,0,0.22))',
           }}
         >
           <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
@@ -577,7 +583,9 @@ const RenderTextElement: React.FC<{ element: TextElement }> = ({ element }) => {
         textDecoration: isUnderline ? 'underline' : 'none',
         letterSpacing: letterSpacing ? `${letterSpacing}px` : 'normal',
         WebkitTextStroke: strokeWidth && strokeColor ? `${strokeWidth}px ${strokeColor}` : undefined,
-        textShadow: shadowColor ? `2px 2px ${shadowBlur || 3}px ${shadowColor}` : undefined,
+        textShadow: shadowColor
+          ? `2px 2px ${shadowBlur || 3}px ${shadowColor}`
+          : '0 0.5px 1px rgba(0,0,0,0.2)',
         lineHeight: 1.15,
         wordBreak: 'break-word',
       }}
@@ -593,6 +601,9 @@ const RenderClipartElement: React.FC<{ element: ClipartElement }> = ({ element }
   return (
     <div
       className="w-full h-full flex items-center justify-center select-none"
+      style={{
+        filter: 'drop-shadow(0 0.5px 0.75px rgba(0,0,0,0.2))',
+      }}
       dangerouslySetInnerHTML={{ __html: svgWithColor }}
     />
   );
@@ -604,13 +615,18 @@ const RenderImageElement: React.FC<{ element: ImageElement }> = ({ element }) =>
   if (element.filter === 'sepia') filterStyle = 'sepia(100%)';
   if (element.filter === 'invert') filterStyle = 'invert(100%)';
 
+  const combinedFilter =
+    filterStyle === 'none'
+      ? 'drop-shadow(0 0.5px 0.75px rgba(0,0,0,0.18))'
+      : `${filterStyle} drop-shadow(0 0.5px 0.75px rgba(0,0,0,0.18))`;
+
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={element.src}
       alt={element.originalFileName || 'Uploaded Design'}
       className="w-full h-full object-contain pointer-events-none select-none"
-      style={{ filter: filterStyle }}
+      style={{ filter: combinedFilter }}
     />
   );
 };
