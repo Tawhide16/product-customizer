@@ -72,8 +72,12 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-600 font-bold text-xs">
-                      <Package className="w-4 h-4" />
+                    <div className="w-10 h-10 rounded-lg bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-600 font-bold text-xs overflow-hidden shrink-0">
+                      {p.image ? (
+                        <img src={p.image} alt={p.name} className="w-full h-full object-contain p-0.5" />
+                      ) : (
+                        <Package className="w-4 h-4" />
+                      )}
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-zinc-900">{p.name}</h4>

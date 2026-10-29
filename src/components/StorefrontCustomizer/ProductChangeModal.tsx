@@ -23,7 +23,7 @@ export const ProductChangeModal: React.FC<ProductChangeModalProps> = ({
 
   if (!isOpen) return null;
 
-  const categories = ['All', 'Apparel', 'Drinkware', 'Home', 'Bags', 'Accessories'];
+  const categories = ['All', 'Apparel', 'Accessories', 'Bags', 'Home'];
 
   const filtered = products.filter(
     (p) => selectedCategory === 'All' || p.category === selectedCategory
@@ -84,6 +84,17 @@ export const ProductChangeModal: React.FC<ProductChangeModalProps> = ({
                     </span>
                     {isCurrent && <Check className="w-4 h-4 text-emerald-600" />}
                   </div>
+
+                  {prod.image && (
+                    <div className="w-full h-28 mb-2 rounded-lg bg-zinc-50 border border-zinc-100 flex items-center justify-center p-1.5 overflow-hidden group-hover:scale-[1.02] transition-transform">
+                      <img
+                        src={prod.image}
+                        alt={prod.name}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  )}
+
                   <h4 className="text-xs font-bold text-zinc-900 group-hover:text-emerald-700">
                     {prod.name}
                   </h4>

@@ -33,6 +33,7 @@ export interface Product {
   category: 'Apparel' | 'Drinkware' | 'Accessories' | 'Headwear' | 'Bags' | 'Home';
   description: string;
   basePrice: number;
+  image?: string;
   colors: ProductColor[];
   sides: ProductSide[];
   sizes: string[];

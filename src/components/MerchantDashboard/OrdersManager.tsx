@@ -101,9 +101,9 @@ export const OrdersManager: React.FC = () => {
       orderNumber: '#SP-1040',
       customerName: 'Elena Rostova',
       customerEmail: 'elena@rostova-design.com',
-      product: CATALOG_PRODUCTS[2], // Mug
+      product: CATALOG_PRODUCTS[2], // iPhone Case
       selectedColor: CATALOG_PRODUCTS[2].colors[0],
-      size: '15 oz',
+      size: 'iPhone 16 Pro',
       quantity: 50,
       totalPrice: 507.5,
       printSidesUsed: ['front', 'back'],

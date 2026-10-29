@@ -120,7 +120,7 @@ export const Studio: React.FC<StudioProps> = ({
   // Modern UI specific states (Tabs, Filters, Accordions)
   const [activePanelTab, setActivePanelTab] = useState<'tools' | 'catalog'>('tools');
   const [catalogSearch, setCatalogSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<'All' | 'Apparel' | 'Accessories' | 'Home'>('All');
+  const [categoryFilter, setCategoryFilter] = useState<'All' | 'Apparel' | 'Accessories' | 'Bags' | 'Home'>('All');
   const [wishlist, setWishlist] = useState<string[]>(['prod-tshirt-crewneck']);
   const [openAccordions, setOpenAccordions] = useState<{ [key: string]: boolean }>({
     materials: true,
@@ -870,7 +870,7 @@ export const Studio: React.FC<StudioProps> = ({
               <div className="p-3 space-y-3">
                 {/* Category Chips */}
                 <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
-                  {(['All', 'Apparel', 'Accessories', 'Home'] as const).map((cat) => (
+                  {(['All', 'Apparel', 'Accessories', 'Bags', 'Home'] as const).map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setCategoryFilter(cat)}
@@ -911,11 +911,19 @@ export const Studio: React.FC<StudioProps> = ({
 
                         {/* Product Cutout Mockup */}
                         <div className="w-full h-24 relative flex items-center justify-center p-1 pointer-events-none mb-1">
-                          <ProductMockupSvg
-                            mockupKey={prod.sides[0].mockupSvg}
-                            colorHex={prod.colors[0].hex}
-                            sideId={prod.sides[0].id}
-                          />
+                          {prod.image ? (
+                            <img
+                              src={prod.image}
+                              alt={prod.name}
+                              className="w-full h-full object-contain drop-shadow-xs group-hover:scale-105 transition-transform"
+                            />
+                          ) : (
+                            <ProductMockupSvg
+                              mockupKey={prod.sides[0].mockupSvg}
+                              colorHex={prod.colors[0].hex}
+                              sideId={prod.sides[0].id}
+                            />
+                          )}
                         </div>
 
                         <div>
