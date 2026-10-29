@@ -10,11 +10,106 @@ interface ProductMockupSvgProps {
   children?: React.ReactNode;
 }
 
+const PHOTO_MOCKUPS: Record<
+  string,
+  {
+    image: string;
+    alt: string;
+  }
+> = {
+  'case-back': {
+    image: '/products/iphone-case.png',
+    alt: 'Apple iPhone 16 Pro Tough Case',
+  },
+  'hoodie-front': {
+    image: '/products/hoodie.png',
+    alt: 'Streetwear Heavyweight Fleece Hoodie',
+  },
+  'hoodie-back': {
+    image: '/products/hoodie.png',
+    alt: 'Streetwear Heavyweight Fleece Hoodie (Back)',
+  },
+  'tshirt-front': {
+    image: '/products/tshirt.png',
+    alt: 'Unisex Premium Heavy Cotton T-Shirt',
+  },
+  'tshirt-back': {
+    image: '/products/tshirt.png',
+    alt: 'Unisex Premium Heavy Cotton T-Shirt (Back)',
+  },
+  'tote-front': {
+    image: '/products/tote-bag.png',
+    alt: 'Heavy Cotton Canvas Market Tote Bag',
+  },
+  'tote-back': {
+    image: '/products/tote-bag.png',
+    alt: 'Heavy Cotton Canvas Market Tote Bag (Back)',
+  },
+  'pillow-front': {
+    image: '/products/throw-pillow.png',
+    alt: 'Custom Square Plush Throw Pillow',
+  },
+  'pillow-back': {
+    image: '/products/throw-pillow.png',
+    alt: 'Custom Square Plush Throw Pillow (Back)',
+  },
+};
+
 export const ProductMockupSvg: React.FC<ProductMockupSvgProps> = ({
   mockupKey,
   colorHex,
   children,
 }) => {
+  const photo = PHOTO_MOCKUPS[mockupKey];
+
+  if (photo) {
+    const isTintable =
+      mockupKey.startsWith('tshirt') ||
+      mockupKey.startsWith('pillow') ||
+      mockupKey.startsWith('hoodie') ||
+      mockupKey.startsWith('tote');
+    const isCustomColor = Boolean(
+      colorHex &&
+        colorHex.toLowerCase() !== '#ffffff' &&
+        colorHex.toLowerCase() !== '#f5f0e8' &&
+        colorHex.toLowerCase() !== '#f8fafc'
+    );
+
+    return (
+      <div className="relative w-full h-full flex items-center justify-center select-none">
+        {/* Real Photographic Studio Mockup Image */}
+        <img
+          src={photo.image}
+          alt={photo.alt}
+          className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.18)] select-none pointer-events-none mix-blend-multiply"
+          draggable={false}
+        />
+
+        {/* Dynamic Color Tint overlay preserving textures & fabric folds */}
+        {isTintable && isCustomColor && (
+          <div
+            className="absolute inset-0 pointer-events-none mix-blend-multiply transition-colors duration-300"
+            style={{
+              backgroundColor: colorHex,
+              opacity:
+                colorHex === '#18181b' || colorHex === '#1e293b' || colorHex === '#27272a' ? 0.88 : 0.65,
+              maskImage: `url(${photo.image})`,
+              WebkitMaskImage: `url(${photo.image})`,
+              maskSize: 'contain',
+              WebkitMaskSize: 'contain',
+              maskPosition: 'center',
+              WebkitMaskPosition: 'center',
+              maskRepeat: 'no-repeat',
+              WebkitMaskRepeat: 'no-repeat',
+            }}
+          />
+        )}
+
+        {children}
+      </div>
+    );
+  }
+
   // Render realistic vector mockups based on mockupKey
   switch (mockupKey) {
     case 'tshirt-front':

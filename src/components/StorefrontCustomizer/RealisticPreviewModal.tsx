@@ -58,7 +58,7 @@ export const RealisticPreviewModal: React.FC<RealisticPreviewModalProps> = ({
 
         {/* Realistic Stage */}
         <div className="relative p-8 flex items-center justify-center bg-radial from-white to-zinc-100 min-h-[460px]">
-          <div className="relative w-[360px] h-[420px] shadow-2xl rounded-2xl overflow-hidden bg-white/40 p-2 border border-zinc-200/60">
+          <div className="relative w-[380px] h-[380px] shadow-2xl rounded-2xl overflow-hidden bg-white/40 p-2 border border-zinc-200/60">
             {/* Mockup */}
             <ProductMockupSvg mockupKey={activeSide.mockupSvg} colorHex={activeColor.hex} sideId={activeSide.id} />
 

@@ -362,7 +362,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
         style={{
           transform: `scale(${zoom})`,
           width: '560px',
-          height: '630px',
+          height: '560px',
         }}
       >
         {/* Photorealistic Product Mockup SVG */}

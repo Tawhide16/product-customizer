@@ -83,8 +83,8 @@ export const Studio: React.FC<StudioProps> = ({
   initialPricingSettings,
   onSaveOrderRecord,
 }) => {
-  // Current active product & configuration (defaulting to the Throw Pillow from the Inkybay link or T-Shirt)
-  const defaultProduct = products.find((p) => p.id === 'prod-throw-pillow') || products[0];
+  // Current active product & configuration (defaulting to the Premium T-Shirt)
+  const defaultProduct = products.find((p) => p.id === 'prod-tshirt-crewneck') || products[0];
   const [selectedProductId, setSelectedProductId] = useState<string>(defaultProduct.id);
   const currentProduct = products.find((p) => p.id === selectedProductId) || products[0];
 
