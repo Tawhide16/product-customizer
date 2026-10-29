@@ -4,7 +4,7 @@ import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { DesignElement, Product, ProductSide, ProductColor, TextElement, ClipartElement, ImageElement, QRCodeElement, RosterElement } from '@/types/customizer';
 import { ProductMockupSvg } from '@/components/Mockups/ProductMockupSvg';
 import { ProductSurfaceOverlay } from '@/components/Mockups/ProductSurfaceOverlay';
-import { ZoomIn, ZoomOut, Maximize2, Eye, EyeOff, RotateCw, Trash2, Copy, Move, AlertTriangle } from 'lucide-react';
+import { ZoomIn, ZoomOut, Maximize2, Eye, EyeOff, RotateCw, Trash2, Copy, AlertTriangle } from 'lucide-react';
 
 interface CanvasAreaProps {
   product: Product;
@@ -68,12 +68,21 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
     startRotation: 0,
   });
 
-  const selectedElement = elements.find((el) => el.id === selectedElementId && el.sideId === activeSide.id);
+  // Calculate measured height in percent relative to the print area
+  const getMeasuredHeightPercent = (el: DesignElement, domTarget: HTMLElement | null) => {
+    if (!printAreaRef.current) return el.height;
+    const domEl = domTarget?.closest('[data-canvas-element="true"]') as HTMLElement | null;
+    const printHeight = printAreaRef.current.offsetHeight;
+    if (domEl && printHeight > 0) {
+      return (domEl.offsetHeight / printHeight) * 100;
+    }
+    return el.height;
+  };
 
-  // Check if any element exceeds the print area (x < 0, y < 0, x+w > 100, y+h > 100)
+  // Check if any element exceeds the print area boundary
   const hasBoundaryOverflow = elements.some((el) => {
     if (el.sideId !== activeSide.id) return false;
-    return el.x < -2 || el.y < -2 || el.x + el.width > 102 || el.y + el.height > 102;
+    return el.x < -0.5 || el.y < -0.5 || el.x + el.width > 100.5 || el.y + el.height > 100.5;
   });
 
   // Start Move
@@ -83,6 +92,8 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
     isDraggingRef.current = false;
     onSelectElement(el.id);
 
+    const measuredH = getMeasuredHeightPercent(el, e.currentTarget as HTMLElement);
+
     setDragState({
       type: 'move',
       elementId: el.id,
@@ -91,7 +102,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
       startElX: el.x,
       startElY: el.y,
       startWidth: el.width,
-      startHeight: el.height,
+      startHeight: measuredH,
       startRotation: el.rotation,
     });
   };
@@ -99,6 +110,8 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
   // Start Resize
   const handlePointerDownResize = (e: React.PointerEvent, handle: string, el: DesignElement) => {
     e.stopPropagation();
+    const measuredH = getMeasuredHeightPercent(el, e.currentTarget as HTMLElement);
+
     setDragState({
       type: 'resize',
       elementId: el.id,
@@ -108,7 +121,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
       startElX: el.x,
       startElY: el.y,
       startWidth: el.width,
-      startHeight: el.height,
+      startHeight: measuredH,
       startRotation: el.rotation,
     });
   };
@@ -116,6 +129,8 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
   // Start Rotate
   const handlePointerDownRotate = (e: React.PointerEvent, el: DesignElement) => {
     e.stopPropagation();
+    const measuredH = getMeasuredHeightPercent(el, e.currentTarget as HTMLElement);
+
     setDragState({
       type: 'rotate',
       elementId: el.id,
@@ -124,7 +139,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
       startElX: el.x,
       startElY: el.y,
       startWidth: el.width,
-      startHeight: el.height,
+      startHeight: measuredH,
       startRotation: el.rotation,
     });
   };
@@ -271,7 +286,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
         </div>
       )}
 
-      {/* Side Rotation Controls (Reference 1 & Reference 2 style curved arrows) */}
+      {/* Side Rotation Controls */}
       {onRotateSide && (
         <>
           <button
@@ -332,26 +347,12 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
         </button>
       </div>
 
-      {/* Active Side & Dimension Watermark Pill (Top Left) */}
-      <div className="absolute top-5 left-6 z-20 flex items-center gap-2">
-        <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/90 border border-white/90 shadow-md backdrop-blur-md text-zinc-800">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          {product.name} • {activeSide.name}
-        </span>
-        <span className="text-[11px] text-zinc-500 font-semibold bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-zinc-200/50 shadow-xs hidden md:inline-block">
-          {activeSide.printArea.physicalWidthInches}&quot; × {activeSide.printArea.physicalHeightInches}&quot; ({activeSide.printArea.dpi} DPI Print Specs)
-        </span>
-      </div>
-
-      {/* Studio Turntable Podium (Reference 2 style round turntable platform) */}
+      {/* Studio Turntable Podium */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center z-0">
-        {/* Turntable Top Disk */}
         <div className="w-[360px] sm:w-[420px] h-[58px] rounded-[50%] bg-gradient-to-b from-white via-zinc-100 to-zinc-200 border-2 border-white shadow-[0_15px_35px_rgba(0,0,0,0.12)] flex items-center justify-center relative">
           <div className="w-[320px] sm:w-[380px] h-[44px] rounded-[50%] border border-zinc-300/60 bg-gradient-to-b from-zinc-50/50 to-zinc-100/50" />
         </div>
-        {/* Turntable Base Bevel */}
         <div className="w-[380px] sm:w-[440px] h-[16px] -mt-[24px] rounded-[50%] bg-gradient-to-b from-zinc-300 to-zinc-400 opacity-60 shadow-lg blur-[1px]" />
-        {/* 360 Rotation Arc Badge */}
         <div className="mt-2 flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/80 border border-zinc-200/80 text-[10px] font-bold text-zinc-600 shadow-xs">
           <span>⤾ 360° ⤿</span>
         </div>
@@ -390,128 +391,195 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
         >
           {/* Printable Boundary Label Tag */}
           {showGuides && (
-            <div className="absolute -top-6 left-0 flex items-center gap-1 bg-zinc-900 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-t shadow-sm tracking-wider uppercase">
+            <div className="absolute -top-6 left-0 flex items-center gap-1 bg-zinc-900 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-t shadow-sm tracking-wider uppercase pointer-events-none select-none z-20">
               <span>{activeSide.printArea.name}</span>
             </div>
           )}
 
-          {/* Render Elements inside this print area */}
-          {elements
-            .filter((el) => el.sideId === activeSide.id && el.isVisible !== false)
-            .sort((a, b) => a.zIndex - b.zIndex)
-            .map((el) => {
-              const isSelected = el.id === selectedElementId;
-
-              return (
-                <div
+          {/* Clipped Print Zone: strictly crops any element crossing the print boundary */}
+          <div className="absolute inset-0 overflow-hidden">
+            {elements
+              .filter((el) => el.sideId === activeSide.id && el.isVisible !== false)
+              .sort((a, b) => a.zIndex - b.zIndex)
+              .map((el) => (
+                <CanvasElementItem
                   key={el.id}
-                  data-canvas-element="true"
-                  onPointerDown={(e) => handlePointerDownElement(e, el)}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelectElement(el.id);
-                  }}
-                  className={`absolute group cursor-move select-none touch-none ${
-                    isSelected ? 'z-50' : ''
-                  }`}
-                  style={{
-                    left: `${el.x}%`,
-                    top: `${el.y}%`,
-                    width: `${el.width}%`,
-                    height: el.height ? `${el.height}%` : 'auto',
-                    transform: `rotate(${el.rotation}deg)`,
-                    transformOrigin: 'center center',
-                    opacity: el.opacity ?? 1,
-                    zIndex: isSelected ? 50 : (el.zIndex ?? 1),
-                  }}
-                >
-                  {/* Element Content Render */}
-                  <div className="w-full h-full relative pointer-events-auto">
-                    {el.type === 'text' && <RenderTextElement element={el} />}
-                    {el.type === 'clipart' && <RenderClipartElement element={el} />}
-                    {el.type === 'image' && <RenderImageElement element={el} />}
-                    {el.type === 'qrcode' && <RenderQRCodeElement element={el} />}
-                    {el.type === 'roster' && <RenderRosterElement element={el} />}
-                  </div>
-
-                  {/* Selected Element Bounding Box & Transform Handles */}
-                  {isSelected && !el.isLocked && (
-                    <>
-                      {/* Active Boundary Outline */}
-                      <div className="absolute inset-0 border-2 border-emerald-500 pointer-events-none rounded-[1px] shadow-sm" />
-
-                      {/* Rotation Handle on Top */}
-                      <div
-                        data-element-control="true"
-                        onPointerDown={(e) => handlePointerDownRotate(e, el)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute -top-7 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 border-emerald-600 shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"
-                        title="Rotate element"
-                      >
-                        <RotateCw className="w-2.5 h-2.5 text-emerald-700" />
-                      </div>
-                      {/* Stem connecting top border to rotation handle */}
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-[1.5px] h-4 bg-emerald-600 pointer-events-none" />
-
-                      {/* 4 Corner Resize Handles */}
-                      <div
-                        data-element-control="true"
-                        onPointerDown={(e) => handlePointerDownResize(e, 'nw', el)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute -top-1.5 -left-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nwse-resize hover:scale-125 transition-transform"
-                      />
-                      <div
-                        data-element-control="true"
-                        onPointerDown={(e) => handlePointerDownResize(e, 'ne', el)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nesw-resize hover:scale-125 transition-transform"
-                      />
-                      <div
-                        data-element-control="true"
-                        onPointerDown={(e) => handlePointerDownResize(e, 'se', el)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nwse-resize hover:scale-125 transition-transform"
-                      />
-                      <div
-                        data-element-control="true"
-                        onPointerDown={(e) => handlePointerDownResize(e, 'sw', el)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="absolute -bottom-1.5 -left-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nesw-resize hover:scale-125 transition-transform"
-                      />
-
-                      {/* Quick Action Floating Bar above Element */}
-                      <div
-                        data-element-control="true"
-                        className="absolute -bottom-9 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-zinc-900/90 text-white rounded-md px-1.5 py-1 shadow-xl z-50 text-[11px]"
-                        onPointerDown={(e) => e.stopPropagation()}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button
-                          onClick={() => onDuplicateElement(el.id)}
-                          className="p-1 hover:bg-zinc-700 rounded transition"
-                          title="Duplicate element"
-                        >
-                          <Copy className="w-3.5 h-3.5" />
-                        </button>
-                        <div className="w-[1px] h-3 bg-zinc-700" />
-                        <button
-                          onClick={() => onDeleteElement(el.id)}
-                          className="p-1 hover:bg-red-600 rounded transition text-red-300 hover:text-white"
-                          title="Delete element"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
+                  element={el}
+                  isSelected={el.id === selectedElementId}
+                  printAreaRef={printAreaRef}
+                  onSelectElement={onSelectElement}
+                  onUpdateElement={onUpdateElement}
+                  onDeleteElement={onDeleteElement}
+                  onDuplicateElement={onDuplicateElement}
+                  onPointerDownElement={handlePointerDownElement}
+                  onPointerDownResize={handlePointerDownResize}
+                  onPointerDownRotate={handlePointerDownRotate}
+                />
+              ))}
+          </div>
 
           {/* Realistic Product Surface Shading & Material Lighting Overlay */}
           <ProductSurfaceOverlay mockupKey={activeSide.mockupSvg} isDarkProduct={activeColor.dark} />
         </div>
       </div>
+    </div>
+  );
+};
+
+interface CanvasElementItemProps {
+  element: DesignElement;
+  isSelected: boolean;
+  printAreaRef: React.RefObject<HTMLDivElement | null>;
+  onSelectElement: (id: string | null) => void;
+  onUpdateElement: (id: string, updates: Partial<DesignElement>) => void;
+  onDeleteElement: (id: string) => void;
+  onDuplicateElement: (id: string) => void;
+  onPointerDownElement: (e: React.PointerEvent, el: DesignElement) => void;
+  onPointerDownResize: (e: React.PointerEvent, handle: string, el: DesignElement) => void;
+  onPointerDownRotate: (e: React.PointerEvent, el: DesignElement) => void;
+}
+
+const CanvasElementItem: React.FC<CanvasElementItemProps> = ({
+  element: el,
+  isSelected,
+  printAreaRef,
+  onSelectElement,
+  onUpdateElement,
+  onDeleteElement,
+  onDuplicateElement,
+  onPointerDownElement,
+  onPointerDownResize,
+  onPointerDownRotate,
+}) => {
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  // Automatically measure and synchronize multi-line text height
+  useEffect(() => {
+    if (el.type === 'text' && !el.isCurved && elementRef.current && printAreaRef.current) {
+      const printHeight = printAreaRef.current.offsetHeight;
+      if (printHeight > 0) {
+        const measuredHeightPercent = Math.round((elementRef.current.offsetHeight / printHeight) * 100 * 10) / 10;
+        if (Math.abs((el.height || 0) - measuredHeightPercent) > 1.5) {
+          onUpdateElement(el.id, { height: measuredHeightPercent });
+        }
+      }
+    }
+  }, [
+    el.id,
+    el.type,
+    (el as TextElement).isCurved,
+    (el as TextElement).text,
+    (el as TextElement).fontSize,
+    (el as TextElement).fontFamily,
+    (el as TextElement).letterSpacing,
+    el.width,
+    el.height,
+    onUpdateElement,
+    printAreaRef,
+  ]);
+
+  return (
+    <div
+      ref={elementRef}
+      data-canvas-element="true"
+      onPointerDown={(e) => onPointerDownElement(e, el)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelectElement(el.id);
+      }}
+      className={`absolute group cursor-move select-none touch-none ${
+        isSelected ? 'z-50' : ''
+      }`}
+      style={{
+        left: `${el.x}%`,
+        top: `${el.y}%`,
+        width: `${el.width}%`,
+        height: el.type === 'text' && !el.isCurved ? 'auto' : (el.height ? `${el.height}%` : 'auto'),
+        transform: `rotate(${el.rotation}deg)`,
+        transformOrigin: 'center center',
+        opacity: el.opacity ?? 1,
+        zIndex: isSelected ? 50 : (el.zIndex ?? 1),
+      }}
+    >
+      {/* Element Content Render */}
+      <div className={`w-full relative pointer-events-auto ${el.type === 'text' && !el.isCurved ? 'h-auto' : 'h-full'}`}>
+        {el.type === 'text' && <RenderTextElement element={el as TextElement} />}
+        {el.type === 'clipart' && <RenderClipartElement element={el as ClipartElement} />}
+        {el.type === 'image' && <RenderImageElement element={el as ImageElement} />}
+        {el.type === 'qrcode' && <RenderQRCodeElement element={el as QRCodeElement} />}
+        {el.type === 'roster' && <RenderRosterElement element={el as RosterElement} />}
+      </div>
+
+      {/* Selected Element Bounding Box & Transform Handles */}
+      {isSelected && !el.isLocked && (
+        <>
+          {/* Active Boundary Outline: bounds the entire multi-line content perfectly */}
+          <div className="absolute inset-0 border-2 border-emerald-500 pointer-events-none rounded-[1px] shadow-sm" />
+
+          {/* Rotation Handle on Top */}
+          <div
+            data-element-control="true"
+            onPointerDown={(e) => onPointerDownRotate(e, el)}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute -top-7 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 border-emerald-600 shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"
+            title="Rotate element"
+          >
+            <RotateCw className="w-2.5 h-2.5 text-emerald-700" />
+          </div>
+          {/* Stem connecting top border to rotation handle */}
+          <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-[1.5px] h-4 bg-emerald-600 pointer-events-none" />
+
+          {/* 4 Corner Resize Handles */}
+          <div
+            data-element-control="true"
+            onPointerDown={(e) => onPointerDownResize(e, 'nw', el)}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute -top-1.5 -left-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nwse-resize hover:scale-125 transition-transform"
+          />
+          <div
+            data-element-control="true"
+            onPointerDown={(e) => onPointerDownResize(e, 'ne', el)}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nesw-resize hover:scale-125 transition-transform"
+          />
+          <div
+            data-element-control="true"
+            onPointerDown={(e) => onPointerDownResize(e, 'se', el)}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nwse-resize hover:scale-125 transition-transform"
+          />
+          <div
+            data-element-control="true"
+            onPointerDown={(e) => onPointerDownResize(e, 'sw', el)}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute -bottom-1.5 -left-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nesw-resize hover:scale-125 transition-transform"
+          />
+
+          {/* Quick Action Floating Bar below Element */}
+          <div
+            data-element-control="true"
+            className="absolute -bottom-9 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-zinc-900/90 text-white rounded-md px-1.5 py-1 shadow-xl z-50 text-[11px]"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => onDuplicateElement(el.id)}
+              className="p-1 hover:bg-zinc-700 rounded transition cursor-pointer"
+              title="Duplicate element"
+            >
+              <Copy className="w-3.5 h-3.5" />
+            </button>
+            <div className="w-[1px] h-3 bg-zinc-700" />
+            <button
+              onClick={() => onDeleteElement(el.id)}
+              className="p-1 hover:bg-red-600 rounded transition text-red-300 hover:text-white cursor-pointer"
+              title="Delete element"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -588,6 +656,7 @@ const RenderTextElement: React.FC<{ element: TextElement }> = ({ element }) => {
           : '0 0.5px 1px rgba(0,0,0,0.2)',
         lineHeight: 1.15,
         wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap',
       }}
       className="w-full select-none"
     >

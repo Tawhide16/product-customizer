@@ -8,11 +8,7 @@ import {
   DollarSign,
   Printer,
   Code2,
-  HelpCircle,
-  Sparkles,
   ShoppingBag,
-  ExternalLink,
-  Globe,
 } from 'lucide-react';
 
 export type AppView = 'customizer' | 'storefront' | 'catalog' | 'pricing' | 'orders' | 'integration';
@@ -20,7 +16,7 @@ export type AppView = 'customizer' | 'storefront' | 'catalog' | 'pricing' | 'ord
 interface ShopifyPolarisHeaderProps {
   currentView: AppView;
   onSelectView: (view: AppView) => void;
-  onOpenHelp: () => void;
+  onOpenHelp?: () => void;
   cartCount?: number;
   onOpenCart?: () => void;
 }
@@ -28,14 +24,13 @@ interface ShopifyPolarisHeaderProps {
 export const ShopifyPolarisHeader: React.FC<ShopifyPolarisHeaderProps> = ({
   currentView,
   onSelectView,
-  onOpenHelp,
   cartCount = 1,
   onOpenCart,
 }) => {
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-zinc-200/80 shrink-0 z-40 select-none sticky top-0">
       <div className="h-14 px-4 sm:px-6 flex items-center justify-between gap-4">
-        {/* Brand Wordmark & Mode Badge */}
+        {/* Brand Wordmark */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2.5">
             <img
@@ -47,11 +42,6 @@ export const ShopifyPolarisHeader: React.FC<ShopifyPolarisHeaderProps> = ({
             <span className="text-xs font-semibold text-zinc-600 hidden sm:inline">
               Product Customization Studio
             </span>
-          </div>
-
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-zinc-900 text-white shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Product Studio
           </div>
         </div>
 
@@ -84,22 +74,8 @@ export const ShopifyPolarisHeader: React.FC<ShopifyPolarisHeaderProps> = ({
           })}
         </nav>
 
-        {/* Right Action Icons: Store pill, Help, Bag */}
+        {/* Right Action: Bag Pill */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 bg-zinc-50 border border-zinc-200/80 rounded-full text-xs text-zinc-600">
-            <Globe className="w-3.5 h-3.5 text-emerald-600" />
-            <span className="font-medium text-[11px]">store.origin-studio.com</span>
-          </div>
-
-          <button
-            onClick={onOpenHelp}
-            className="p-2 rounded-full text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition flex items-center gap-1 text-xs"
-            title="App documentation & blueprint guide"
-          >
-            <HelpCircle className="w-4 h-4" />
-          </button>
-
-          {/* Bag Pill (Reference 1 style) */}
           {onOpenCart && (
             <button
               onClick={onOpenCart}
