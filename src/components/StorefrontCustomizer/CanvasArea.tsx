@@ -41,6 +41,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const printAreaRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef<boolean>(false);
 
   // Interaction drag state
   const [dragState, setDragState] = useState<{
@@ -78,6 +79,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
   const handlePointerDownElement = (e: React.PointerEvent, el: DesignElement) => {
     if (el.isLocked) return;
     e.stopPropagation();
+    isDraggingRef.current = false;
     onSelectElement(el.id);
 
     setDragState({
@@ -134,6 +136,11 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
       const printRect = printAreaRef.current.getBoundingClientRect();
       const currentElement = elements.find((el) => el.id === dragState.elementId);
       if (!currentElement) return;
+
+      // Track whether the pointer has moved enough to be a drag gesture
+      if (Math.abs(e.clientX - dragState.startX) > 3 || Math.abs(e.clientY - dragState.startY) > 3) {
+        isDraggingRef.current = true;
+      }
 
       // Delta in % relative to the print area box
       const deltaXPercent = ((e.clientX - dragState.startX) / printRect.width) * 100;
@@ -205,6 +212,10 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
         startHeight: 0,
         startRotation: 0,
       });
+      // Allow click event to finish before clearing drag flag
+      setTimeout(() => {
+        isDraggingRef.current = false;
+      }, 50);
     }
   }, [dragState.type]);
 
@@ -217,11 +228,23 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
     };
   }, [handlePointerMove, handlePointerUp]);
 
-  // Click on background deselects
+  // Click on background deselects (only if clicked outside any element or control)
   const handleCanvasClick = (e: React.MouseEvent) => {
-    if (e.target === containerRef.current || (e.target as HTMLElement).closest('.canvas-backdrop')) {
-      onSelectElement(null);
+    if (isDraggingRef.current) return;
+
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+
+    // Never deselect if clicked on a design element, transform handle, or button
+    if (
+      target.closest('[data-canvas-element]') ||
+      target.closest('[data-element-control]') ||
+      target.closest('button')
+    ) {
+      return;
     }
+
+    onSelectElement(null);
   };
 
   return (
@@ -381,7 +404,12 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
               return (
                 <div
                   key={el.id}
+                  data-canvas-element="true"
                   onPointerDown={(e) => handlePointerDownElement(e, el)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectElement(el.id);
+                  }}
                   className={`absolute group cursor-move select-none touch-none ${
                     isSelected ? 'z-50' : ''
                   }`}
@@ -393,6 +421,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
                     transform: `rotate(${el.rotation}deg)`,
                     transformOrigin: 'center center',
                     opacity: el.opacity ?? 1,
+                    zIndex: isSelected ? 50 : (el.zIndex ?? 1),
                   }}
                 >
                   {/* Element Content Render */}
@@ -412,7 +441,9 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
 
                       {/* Rotation Handle on Top */}
                       <div
+                        data-element-control="true"
                         onPointerDown={(e) => handlePointerDownRotate(e, el)}
+                        onClick={(e) => e.stopPropagation()}
                         className="absolute -top-7 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 border-emerald-600 shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing hover:scale-110 transition-transform"
                         title="Rotate element"
                       >
@@ -423,26 +454,36 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
 
                       {/* 4 Corner Resize Handles */}
                       <div
+                        data-element-control="true"
                         onPointerDown={(e) => handlePointerDownResize(e, 'nw', el)}
+                        onClick={(e) => e.stopPropagation()}
                         className="absolute -top-1.5 -left-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nwse-resize hover:scale-125 transition-transform"
                       />
                       <div
+                        data-element-control="true"
                         onPointerDown={(e) => handlePointerDownResize(e, 'ne', el)}
+                        onClick={(e) => e.stopPropagation()}
                         className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nesw-resize hover:scale-125 transition-transform"
                       />
                       <div
+                        data-element-control="true"
                         onPointerDown={(e) => handlePointerDownResize(e, 'se', el)}
+                        onClick={(e) => e.stopPropagation()}
                         className="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nwse-resize hover:scale-125 transition-transform"
                       />
                       <div
+                        data-element-control="true"
                         onPointerDown={(e) => handlePointerDownResize(e, 'sw', el)}
+                        onClick={(e) => e.stopPropagation()}
                         className="absolute -bottom-1.5 -left-1.5 w-3.5 h-3.5 bg-white border-2 border-emerald-600 rounded-sm shadow-sm cursor-nesw-resize hover:scale-125 transition-transform"
                       />
 
                       {/* Quick Action Floating Bar above Element */}
                       <div
+                        data-element-control="true"
                         className="absolute -bottom-9 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-zinc-900/90 text-white rounded-md px-1.5 py-1 shadow-xl z-50 text-[11px]"
                         onPointerDown={(e) => e.stopPropagation()}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <button
                           onClick={() => onDuplicateElement(el.id)}

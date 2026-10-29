@@ -283,6 +283,21 @@ export const Studio: React.FC<StudioProps> = ({
     }
   };
 
+  const handleSelectElement = (id: string | null) => {
+    setSelectedElementId(id);
+    if (id) {
+      const el = elements.find((e) => e.id === id);
+      if (el) {
+        setActivePanelTab('tools');
+        if (el.type === 'text') setActiveTool('text');
+        else if (el.type === 'clipart') setActiveTool('clipart');
+        else if (el.type === 'image') setActiveTool('upload');
+        else if (el.type === 'qrcode') setActiveTool('qrcode');
+        else if (el.type === 'roster') setActiveTool('roster');
+      }
+    }
+  };
+
   // Add Tools Handlers
   const handleAddText = (text: string, fontFamily: string, fill: string) => {
     const newEl: TextElement = {
@@ -1002,7 +1017,7 @@ export const Studio: React.FC<StudioProps> = ({
               activeColor={selectedColor}
               elements={elements}
               selectedElementId={selectedElementId}
-              onSelectElement={setSelectedElementId}
+              onSelectElement={handleSelectElement}
               onUpdateElement={handleUpdateElement}
               onDeleteElement={handleDeleteElement}
               onDuplicateElement={handleDuplicateElement}
@@ -1395,7 +1410,7 @@ export const Studio: React.FC<StudioProps> = ({
         elements={elements}
         activeSideId={activeSide.id}
         selectedElementId={selectedElementId}
-        onSelectElement={setSelectedElementId}
+        onSelectElement={handleSelectElement}
         onUpdateElement={handleUpdateElement}
         onDeleteElement={handleDeleteElement}
         onDuplicateElement={handleDuplicateElement}
