@@ -66,11 +66,12 @@ export const TextControls: React.FC<TextControlsProps> = ({
           {/* Text Content */}
           <div>
             <label className="block text-xs font-semibold text-zinc-600 mb-1">Text String</label>
-            <input
-              type="text"
+            <textarea
+              rows={2}
               value={selectedElement.text}
               onChange={(e) => onUpdateText({ text: e.target.value })}
-              className="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none transition"
+              className="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none transition resize-none font-sans"
+              placeholder="Enter text (multi-line supported)..."
             />
           </div>
 
@@ -289,12 +290,12 @@ export const TextControls: React.FC<TextControlsProps> = ({
 
           <div>
             <label className="block text-xs font-semibold text-zinc-600 mb-1">Enter Text</label>
-            <input
-              type="text"
+            <textarea
+              rows={2}
               value={newText}
               onChange={(e) => setNewText(e.target.value)}
               placeholder="e.g. BROOKLYN ATHLETICS"
-              className="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full px-3 py-2 text-sm bg-white border border-zinc-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none resize-none font-sans"
             />
           </div>
 
@@ -332,6 +333,7 @@ export const TextControls: React.FC<TextControlsProps> = ({
                       : 'hover:scale-105'
                   }`}
                   style={{ backgroundColor: col }}
+                  title={col}
                 />
               ))}
               <input

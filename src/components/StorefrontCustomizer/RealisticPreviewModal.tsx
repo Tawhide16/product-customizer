@@ -63,9 +63,9 @@ export const RealisticPreviewModal: React.FC<RealisticPreviewModalProps> = ({
             {/* Mockup */}
             <ProductMockupSvg mockupKey={activeSide.mockupSvg} colorHex={activeColor.hex} sideId={activeSide.id} />
 
-            {/* Print Area Artwork without guides */}
+            {/* Print Area Artwork: strictly cropped to printable boundary */}
             <div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none overflow-hidden"
               style={{
                 left: `${activeSide.printArea.x}%`,
                 top: `${activeSide.printArea.y}%`,
@@ -85,7 +85,7 @@ export const RealisticPreviewModal: React.FC<RealisticPreviewModalProps> = ({
                         left: `${el.x}%`,
                         top: `${el.y}%`,
                         width: `${el.width}%`,
-                        height: el.height ? `${el.height}%` : 'auto',
+                        height: el.type === 'text' && !el.isCurved ? 'auto' : (el.height ? `${el.height}%` : 'auto'),
                         transform: `rotate(${el.rotation}deg)`,
                         transformOrigin: 'center center',
                         opacity: el.opacity ?? 1,
@@ -104,6 +104,8 @@ export const RealisticPreviewModal: React.FC<RealisticPreviewModalProps> = ({
                             WebkitTextStroke: el.strokeWidth && el.strokeColor ? `${el.strokeWidth * 0.5}px ${el.strokeColor}` : undefined,
                             textShadow: el.shadowColor ? `1px 1px 2px ${el.shadowColor}` : undefined,
                             lineHeight: 1.15,
+                            wordBreak: 'break-word',
+                            whiteSpace: 'pre-wrap',
                           }}
                         >
                           {el.text}
