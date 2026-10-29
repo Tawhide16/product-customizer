@@ -20,7 +20,7 @@ export const IntegrationGuide: React.FC = () => {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const reactSnippet = `// 1. Next.js / React Standalone D2C Integration
-import { ProductCustomizer } from '@origin/3d-customizer';
+import { ProductCustomizer } from '@origin/product-customizer';
 
 export default function ProductPage({ product }) {
   return (
@@ -44,7 +44,7 @@ export default function ProductPage({ product }) {
 
   const wooCommerceSnippet = `<?php
 /**
- * WooCommerce Plugin Hook: Universal 3D Customizer
+ * WooCommerce Plugin Hook: Universal Product Customizer
  */
 add_action('woocommerce_after_add_to_cart_button', 'origin_render_customizer_button');
 
@@ -52,7 +52,7 @@ function origin_render_customizer_button() {
     global $product;
     echo '<button type="button" id="origin-customize-btn" class="button alt" 
           data-product-id="' . esc_attr($product->get_id()) . '">
-          🎨 Launch 3D Customizer
+          🎨 Launch Product Customizer
           </button>';
 }
 ?>`;
@@ -66,7 +66,7 @@ function origin_render_customizer_button() {
       productId: '{{ product.id }}',
       variantId: '{{ product.selected_or_first_available_variant.id }}'
     })">
-    ✨ Design in 3D Studio
+    ✨ Design in Product Studio
   </button>
 </div>`;
 
@@ -107,7 +107,7 @@ Payload:
         </div>
         <h1 className="text-xl font-bold text-zinc-900 tracking-tight">Multi-Platform Storefront &amp; API Integrations</h1>
         <p className="text-xs text-zinc-500 mt-1">
-          Deploy the Origin 3D Customizer anywhere: as a standalone React/Next.js store, on WooCommerce, Shopify, Webflow, or via Headless GraphQL/REST APIs.
+          Deploy the Origin Product Customizer anywhere: as a standalone React/Next.js store, on WooCommerce, Shopify, Webflow, or via Headless GraphQL/REST APIs.
         </p>
       </div>
 

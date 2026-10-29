@@ -151,3 +151,4 @@ export const ProductSurfaceOverlay: React.FC<ProductSurfaceOverlayProps> = ({
 
   return null;
 };
+

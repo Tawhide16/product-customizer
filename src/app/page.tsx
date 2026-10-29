@@ -21,7 +21,7 @@ export default function Home() {
 
   React.useEffect(() => {
     setMounted(true);
-    document.title = "Origin ‑ 3D Product Customizer Studio";
+    document.title = "Origin ‑ Product Customizer Studio";
     const linkId = 'inkybay-customizer-fonts';
     if (!document.getElementById(linkId)) {
       const link = document.createElement('link');

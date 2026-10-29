@@ -25,7 +25,7 @@ export const StorefrontSimulator: React.FC<StorefrontSimulatorProps> = ({
         <span className="flex items-center gap-1.5 font-bold tracking-wider uppercase text-[10px] text-amber-300">
           <Sparkles className="w-3.5 h-3.5" /> ORIGIN STUDIO D2C STOREFRONT
         </span>
-        <span className="hidden sm:inline text-zinc-300">✨ Bespoke 3D Personalization • 300 DPI Vector Print Production</span>
+        <span className="hidden sm:inline text-zinc-300">✨ Bespoke Product Personalization • 300 DPI Vector Print Production</span>
         <span className="text-[10px] text-zinc-400">Worldwide Shipping</span>
       </div>
 
@@ -110,7 +110,7 @@ export const StorefrontSimulator: React.FC<StorefrontSimulatorProps> = ({
               className="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer group"
             >
               <Palette className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-              <span>Customize in 3D Studio</span>
+              <span>Customize in Design Studio</span>
               <Sparkles className="w-4 h-4 text-emerald-200 animate-pulse" />
             </button>
 

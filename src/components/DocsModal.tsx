@@ -32,10 +32,10 @@ export const DocsModal: React.FC<DocsModalProps> = ({ isOpen, onClose }) => {
           <div>
             <h4 className="text-sm font-bold text-zinc-900 mb-1 flex items-center gap-1.5">
               <CheckCircle className="w-4 h-4 text-emerald-600" />
-              Origin 3D Customizer Architecture
+              Origin Product Customizer Architecture
             </h4>
             <p>
-              This application implements a universal, cross-platform 3D personalization engine. The visual designer operates independently of any single e-commerce framework and seamlessly integrates with Standalone Next.js stores, WooCommerce, Shopify, and Headless APIs.
+              This application implements a universal, cross-platform product personalization engine. The visual designer operates independently of any single e-commerce framework and seamlessly integrates with Standalone Next.js stores, WooCommerce, Shopify, and Headless APIs.
             </p>
           </div>
 

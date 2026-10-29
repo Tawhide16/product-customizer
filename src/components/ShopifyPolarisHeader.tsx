@@ -45,20 +45,20 @@ export const ShopifyPolarisHeader: React.FC<ShopifyPolarisHeaderProps> = ({
             />
             <span className="text-zinc-300">/</span>
             <span className="text-xs font-semibold text-zinc-600 hidden sm:inline">
-              3D Customizer Studio
+              Product Customization Studio
             </span>
           </div>
 
           <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-zinc-900 text-white shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Universal 3D Studio
+            Product Studio
           </div>
         </div>
 
         {/* Center Glass Pill Navigation Tabs */}
         <nav className="flex items-center gap-1 bg-zinc-100/90 p-1 rounded-full border border-zinc-200/60 shadow-inner overflow-x-auto no-scrollbar">
           {[
-            { id: 'customizer', label: '3D Studio', icon: Palette },
+            { id: 'customizer', label: 'Design Studio', icon: Palette },
             { id: 'storefront', label: 'Storefront', icon: Store },
             { id: 'catalog', label: 'Products', icon: Layers },
             { id: 'pricing', label: 'Pricing Rules', icon: DollarSign },

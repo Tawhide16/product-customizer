@@ -343,7 +343,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
         </span>
       </div>
 
-      {/* 3D Turntable Podium (Reference 2 style round turntable platform) */}
+      {/* Studio Turntable Podium (Reference 2 style round turntable platform) */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none flex flex-col items-center z-0">
         {/* Turntable Top Disk */}
         <div className="w-[360px] sm:w-[420px] h-[58px] rounded-[50%] bg-gradient-to-b from-white via-zinc-100 to-zinc-200 border-2 border-white shadow-[0_15px_35px_rgba(0,0,0,0.12)] flex items-center justify-center relative">
