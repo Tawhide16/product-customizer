@@ -20,9 +20,13 @@ export const StorefrontSimulator: React.FC<StorefrontSimulatorProps> = ({
 
   return (
     <div className="max-w-5xl mx-auto bg-white rounded-2xl border border-zinc-200 shadow-md overflow-hidden">
-      {/* Simulated Shopify Storefront Top Banner */}
-      <div className="bg-zinc-900 text-white text-[11px] py-1.5 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-2">
-        <span>✨ Spring Sale: Free Global Shipping on Customized Orders over $50</span>
+      {/* Storefront Top Announcement Banner */}
+      <div className="bg-zinc-950 text-white text-[11px] py-2 px-4 text-center font-medium tracking-wide flex items-center justify-between">
+        <span className="flex items-center gap-1.5 font-bold tracking-wider uppercase text-[10px] text-amber-300">
+          <Sparkles className="w-3.5 h-3.5" /> ORIGIN STUDIO D2C STOREFRONT
+        </span>
+        <span className="hidden sm:inline text-zinc-300">✨ Bespoke 3D Personalization • 300 DPI Vector Print Production</span>
+        <span className="text-[10px] text-zinc-400">Worldwide Shipping</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 p-6 sm:p-10 gap-8">
@@ -106,7 +110,7 @@ export const StorefrontSimulator: React.FC<StorefrontSimulatorProps> = ({
               className="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer group"
             >
               <Palette className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-              <span>Customize This Product (Inkybay Studio)</span>
+              <span>Customize in 3D Studio</span>
               <Sparkles className="w-4 h-4 text-emerald-200 animate-pulse" />
             </button>
 

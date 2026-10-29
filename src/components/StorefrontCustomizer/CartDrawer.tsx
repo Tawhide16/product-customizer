@@ -111,10 +111,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
           </div>
 
-          {/* Shopify Platform Assurance */}
+          {/* Universal Secure Checkout Assurance */}
           <div className="p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl flex items-center gap-2.5 text-xs text-emerald-800">
             <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-            <span>Encrypted checkout via Shopify Payments. 100% Satisfaction Print Guarantee.</span>
+            <span>256-Bit SSL Encrypted Checkout. Multi-Platform Fulfillment &amp; 100% Print Guarantee.</span>
           </div>
         </div>
 
@@ -131,7 +131,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             onClick={handleCheckout}
             className="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
-            <span>Proceed to Shopify Checkout</span>
+            <span>Proceed to Secure Checkout</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

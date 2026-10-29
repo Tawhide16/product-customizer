@@ -22,18 +22,18 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Origin | 3D Product Customizer Studio",
+  title: "Origin | Universal 3D Product Customizer Studio",
   description:
-    "Customize apparel, t-shirts, hoodies, and merchandise with real-time 3D preview and live Shopify sync.",
+    "Design and personalize custom apparel, hoodies, iPhone cases, bags, and products in real-time 3D with instant print-ready vector generation.",
   applicationName: "Origin Studio",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
     siteName: "Origin Studio",
-    title: "Origin | 3D Product Customizer Studio",
+    title: "Origin | Universal 3D Product Customizer Studio",
     description:
-      "Customize apparel, t-shirts, hoodies, and merchandise with real-time 3D preview and live Shopify sync.",
+      "Design and personalize custom apparel, hoodies, iPhone cases, bags, and products in real-time 3D with instant print-ready vector generation.",
     images: [
       {
         url: "/og-image.jpg",
@@ -53,9 +53,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Origin | 3D Product Customizer Studio",
+    title: "Origin | Universal 3D Product Customizer Studio",
     description:
-      "Customize apparel, t-shirts, hoodies, and merchandise with real-time 3D preview and live Shopify sync.",
+      "Design and personalize custom apparel, hoodies, iPhone cases, bags, and products in real-time 3D with instant print-ready vector generation.",
     images: ["/og-image.jpg"],
   },
   icons: {

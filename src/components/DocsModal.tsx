@@ -32,10 +32,10 @@ export const DocsModal: React.FC<DocsModalProps> = ({ isOpen, onClose }) => {
           <div>
             <h4 className="text-sm font-bold text-zinc-900 mb-1 flex items-center gap-1.5">
               <CheckCircle className="w-4 h-4 text-emerald-600" />
-              Inkybay ‑ ProductsDesigner Architecture
+              Origin 3D Customizer Architecture
             </h4>
             <p>
-              This application implements the cross-platform SaaS blueprint from the Universal Product Customizer specification. The visual designer operates independently of platform-specific code and connects to Shopify via Theme App Extensions and GraphQL Admin APIs.
+              This application implements a universal, cross-platform 3D personalization engine. The visual designer operates independently of any single e-commerce framework and seamlessly integrates with Standalone Next.js stores, WooCommerce, Shopify, and Headless APIs.
             </p>
           </div>
 
@@ -45,7 +45,7 @@ export const DocsModal: React.FC<DocsModalProps> = ({ isOpen, onClose }) => {
                 <Layers className="w-3.5 h-3.5 text-emerald-600" /> Multi-Side Canvas
               </span>
               <p className="text-[11px] text-zinc-500">
-                Front, Back, and Sleeves with realistic vector fabric shading and bounded print zones.
+                Front, Back, and Sleeves with realistic studio product photos and bounded print zones.
               </p>
             </div>
             <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 space-y-1">
@@ -58,10 +58,10 @@ export const DocsModal: React.FC<DocsModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 space-y-1">
               <span className="font-bold text-zinc-800 block flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Shopify Polaris UI
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Universal Commerce Design
               </span>
               <p className="text-[11px] text-zinc-500">
-                Styled precisely in Shopify Polaris design language for embedded merchant admin workflows.
+                Modern glassmorphic interface designed for standalone D2C web apps and multi-platform stores.
               </p>
             </div>
             <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 space-y-1">

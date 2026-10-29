@@ -12,6 +12,7 @@ import {
   Sparkles,
   ShoppingBag,
   ExternalLink,
+  Globe,
 } from 'lucide-react';
 
 export type AppView = 'customizer' | 'storefront' | 'catalog' | 'pricing' | 'orders' | 'integration';
@@ -48,9 +49,9 @@ export const ShopifyPolarisHeader: React.FC<ShopifyPolarisHeaderProps> = ({
             </span>
           </div>
 
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Shopify Live Sync
+          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-zinc-900 text-white shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Universal 3D Studio
           </div>
         </div>
 
@@ -62,7 +63,7 @@ export const ShopifyPolarisHeader: React.FC<ShopifyPolarisHeaderProps> = ({
             { id: 'catalog', label: 'Products', icon: Layers },
             { id: 'pricing', label: 'Pricing Rules', icon: DollarSign },
             { id: 'orders', label: 'Orders & Vectors', icon: Printer },
-            { id: 'integration', label: 'Theme Embed', icon: Code2 },
+            { id: 'integration', label: 'Integrations & API', icon: Code2 },
           ].map((item) => {
             const Icon = item.icon;
             const isActive = currentView === item.id;
@@ -86,8 +87,8 @@ export const ShopifyPolarisHeader: React.FC<ShopifyPolarisHeaderProps> = ({
         {/* Right Action Icons: Store pill, Help, Bag */}
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 bg-zinc-50 border border-zinc-200/80 rounded-full text-xs text-zinc-600">
-            <Store className="w-3.5 h-3.5 text-zinc-400" />
-            <span className="font-medium text-[11px]">acme-apparel.myshopify.com</span>
+            <Globe className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="font-medium text-[11px]">store.origin-studio.com</span>
           </div>
 
           <button
