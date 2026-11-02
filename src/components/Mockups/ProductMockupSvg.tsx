@@ -81,7 +81,7 @@ export const ProductMockupSvg: React.FC<ProductMockupSvgProps> = ({
         <img
           src={photo.image}
           alt={photo.alt}
-          className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.18)] select-none pointer-events-none mix-blend-multiply"
+          className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.18)] select-none pointer-events-none"
           draggable={false}
         />
 

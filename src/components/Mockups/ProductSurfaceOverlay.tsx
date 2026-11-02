@@ -13,7 +13,7 @@ export const ProductSurfaceOverlay: React.FC<ProductSurfaceOverlayProps> = ({
 }) => {
   if (mockupKey === 'case-back') {
     return (
-      <div className="absolute inset-0 pointer-events-none rounded-xl overflow-hidden select-none z-20">
+      <div className="absolute inset-0 pointer-events-none rounded-2xl overflow-hidden select-none z-20">
         {/* Sleek Polycarbonate Specular Glass Reflection Sheen */}
         <div
           className="absolute inset-0 mix-blend-overlay opacity-85"
@@ -24,7 +24,7 @@ export const ProductSurfaceOverlay: React.FC<ProductSurfaceOverlayProps> = ({
         />
         {/* Subtle Lens & Bumper Edge Inset Contour */}
         <div
-          className="absolute inset-0 rounded-xl"
+          className="absolute inset-0 rounded-2xl"
           style={{
             boxShadow: 'inset 0 0 14px rgba(0,0,0,0.25), inset 0 1px 3px rgba(255,255,255,0.2)',
           }}
@@ -36,6 +36,14 @@ export const ProductSurfaceOverlay: React.FC<ProductSurfaceOverlayProps> = ({
   if (mockupKey.startsWith('tshirt')) {
     return (
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-20">
+        {/* Fine Cotton Jersey Weave Pattern (embeds into printed text & artwork) */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.16] mix-blend-overlay">
+          <pattern id="cotton-knit" width="4" height="4" patternUnits="userSpaceOnUse">
+            <path d="M 0 1 Q 2 0 4 1 M 0 3 Q 2 2 4 3" fill="none" stroke="currentColor" strokeWidth="0.6" className="text-zinc-950" />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#cotton-knit)" />
+        </svg>
+
         {/* Natural Chest Drape Lighting & Fabric Curvature */}
         <div
           className="absolute inset-0 mix-blend-multiply opacity-55"
@@ -67,6 +75,14 @@ export const ProductSurfaceOverlay: React.FC<ProductSurfaceOverlayProps> = ({
   if (mockupKey.startsWith('hoodie')) {
     return (
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-20">
+        {/* Brushed Fleece Texture Pattern */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.18] mix-blend-overlay">
+          <pattern id="fleece-knit" width="5" height="5" patternUnits="userSpaceOnUse">
+            <circle cx="2.5" cy="2.5" r="0.8" fill="currentColor" className="text-zinc-950" />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#fleece-knit)" />
+        </svg>
+
         {/* Heavy Fleece Hood Cast Shadow at Top */}
         <div
           className="absolute inset-0 mix-blend-multiply opacity-65"
@@ -98,6 +114,14 @@ export const ProductSurfaceOverlay: React.FC<ProductSurfaceOverlayProps> = ({
   if (mockupKey.startsWith('pillow')) {
     return (
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-20">
+        {/* Plush Linen Weave Pattern */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.16] mix-blend-overlay">
+          <pattern id="linen-weave" width="4" height="4" patternUnits="userSpaceOnUse">
+            <path d="M 0 2 Q 2 3 4 2" fill="none" stroke="currentColor" strokeWidth="0.65" className="text-zinc-950" />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#linen-weave)" />
+        </svg>
+
         {/* 3D Plush Cushion Spherical Center Volume */}
         <div
           className="absolute inset-0 mix-blend-multiply opacity-60"
@@ -129,6 +153,14 @@ export const ProductSurfaceOverlay: React.FC<ProductSurfaceOverlayProps> = ({
   if (mockupKey.startsWith('tote')) {
     return (
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none z-20">
+        {/* Natural Woven Canvas Texture */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.20] mix-blend-overlay">
+          <pattern id="canvas-grid" width="4" height="4" patternUnits="userSpaceOnUse">
+            <path d="M 0 2 L 4 2 M 2 0 L 2 4" fill="none" stroke="currentColor" strokeWidth="0.75" className="text-zinc-950" />
+          </pattern>
+          <rect width="100%" height="100%" fill="url(#canvas-grid)" />
+        </svg>
+
         {/* Heavy Woven Canvas Hanging Gravity Shadows */}
         <div
           className="absolute inset-0 mix-blend-multiply opacity-45"
@@ -151,4 +183,3 @@ export const ProductSurfaceOverlay: React.FC<ProductSurfaceOverlayProps> = ({
 
   return null;
 };
-

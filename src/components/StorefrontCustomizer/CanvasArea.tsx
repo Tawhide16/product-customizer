@@ -358,7 +358,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
         </div>
       </div>
 
-      {/* Zoomable Stage Container */}
+      {/* Zoomable Stage Container: seamless without square white background */}
       <div
         className="canvas-backdrop relative flex items-center justify-center transition-transform duration-100 ease-out z-10"
         style={{
@@ -367,19 +367,19 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
           height: '560px',
         }}
       >
-        {/* Photorealistic Product Mockup SVG */}
-        <div className="absolute inset-0 pointer-events-none filter drop-shadow-[0_25px_30px_rgba(0,0,0,0.18)]">
+        {/* Photorealistic Product Mockup Image */}
+        <div className="absolute inset-0 pointer-events-none">
           <ProductMockupSvg mockupKey={activeSide.mockupSvg} colorHex={activeColor.hex} sideId={activeSide.id} />
         </div>
 
-        {/* Defined Print Area Container */}
+        {/* Defined Print Area Container: perfectly transparent to show real fabric underneath */}
         <div
           ref={printAreaRef}
           className={`absolute transition-colors ${
             showGuides
               ? hasBoundaryOverflow
-                ? 'border-2 border-dashed border-red-500 bg-red-500/[0.04]'
-                : 'border-2 border-dashed border-sky-500/80 bg-sky-500/[0.03]'
+                ? 'border-2 border-dashed border-red-500/80'
+                : 'border-2 border-dashed border-sky-500/70'
               : 'border border-transparent'
           }`}
           style={{
@@ -405,6 +405,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
                 <CanvasElementItem
                   key={el.id}
                   element={el}
+                  activeColor={activeColor}
                   isSelected={el.id === selectedElementId}
                   printAreaRef={printAreaRef}
                   onSelectElement={onSelectElement}
@@ -428,6 +429,7 @@ export const CanvasArea: React.FC<CanvasAreaProps> = ({
 
 interface CanvasElementItemProps {
   element: DesignElement;
+  activeColor: ProductColor;
   isSelected: boolean;
   printAreaRef: React.RefObject<HTMLDivElement | null>;
   onSelectElement: (id: string | null) => void;
@@ -441,6 +443,7 @@ interface CanvasElementItemProps {
 
 const CanvasElementItem: React.FC<CanvasElementItemProps> = ({
   element: el,
+  activeColor,
   isSelected,
   printAreaRef,
   onSelectElement,
@@ -455,7 +458,7 @@ const CanvasElementItem: React.FC<CanvasElementItemProps> = ({
 
   // Automatically measure and synchronize multi-line text height
   useEffect(() => {
-    if (el.type === 'text' && !el.isCurved && elementRef.current && printAreaRef.current) {
+    if (el.type === 'text' && !(el as TextElement).isCurved && elementRef.current && printAreaRef.current) {
       const printHeight = printAreaRef.current.offsetHeight;
       if (printHeight > 0) {
         const measuredHeightPercent = Math.round((elementRef.current.offsetHeight / printHeight) * 100 * 10) / 10;
@@ -494,20 +497,26 @@ const CanvasElementItem: React.FC<CanvasElementItemProps> = ({
         left: `${el.x}%`,
         top: `${el.y}%`,
         width: `${el.width}%`,
-        height: el.type === 'text' && !el.isCurved ? 'auto' : (el.height ? `${el.height}%` : 'auto'),
+        height: el.type === 'text' && !(el as TextElement).isCurved ? 'auto' : (el.height ? `${el.height}%` : 'auto'),
         transform: `rotate(${el.rotation}deg)`,
         transformOrigin: 'center center',
         opacity: el.opacity ?? 1,
         zIndex: isSelected ? 50 : (el.zIndex ?? 1),
       }}
     >
-      {/* Element Content Render */}
-      <div className={`w-full relative pointer-events-auto ${el.type === 'text' && !el.isCurved ? 'h-auto' : 'h-full'}`}>
-        {el.type === 'text' && <RenderTextElement element={el as TextElement} />}
-        {el.type === 'clipart' && <RenderClipartElement element={el as ClipartElement} />}
-        {el.type === 'image' && <RenderImageElement element={el as ImageElement} />}
-        {el.type === 'qrcode' && <RenderQRCodeElement element={el as QRCodeElement} />}
-        {el.type === 'roster' && <RenderRosterElement element={el as RosterElement} />}
+      {/* Element Content Render with Physical Fabric Ink Material Integration */}
+      <div
+        className={`w-full relative pointer-events-auto ${el.type === 'text' && !(el as TextElement).isCurved ? 'h-auto' : 'h-full'}`}
+        style={{
+          mixBlendMode: activeColor.dark ? 'normal' : 'multiply',
+          opacity: el.opacity ?? (activeColor.dark ? 0.98 : 0.95),
+        }}
+      >
+        {el.type === 'text' && <RenderTextElement element={el as TextElement} isDarkProduct={activeColor.dark} />}
+        {el.type === 'clipart' && <RenderClipartElement element={el as ClipartElement} isDarkProduct={activeColor.dark} />}
+        {el.type === 'image' && <RenderImageElement element={el as ImageElement} isDarkProduct={activeColor.dark} />}
+        {el.type === 'qrcode' && <RenderQRCodeElement element={el as QRCodeElement} isDarkProduct={activeColor.dark} />}
+        {el.type === 'roster' && <RenderRosterElement element={el as RosterElement} isDarkProduct={activeColor.dark} />}
       </div>
 
       {/* Selected Element Bounding Box & Transform Handles */}
@@ -585,7 +594,12 @@ const CanvasElementItem: React.FC<CanvasElementItemProps> = ({
 };
 
 // Renderers for Text, Clipart, Image, QRCode, and Roster
-const RenderTextElement: React.FC<{ element: TextElement }> = ({ element }) => {
+interface RenderProps<T> {
+  element: T;
+  isDarkProduct?: boolean;
+}
+
+const RenderTextElement: React.FC<RenderProps<TextElement>> = ({ element, isDarkProduct }) => {
   const {
     text,
     fontFamily,
@@ -628,7 +642,9 @@ const RenderTextElement: React.FC<{ element: TextElement }> = ({ element }) => {
           style={{
             filter: shadowColor
               ? `drop-shadow(2px 2px ${shadowBlur || 2}px ${shadowColor})`
-              : 'drop-shadow(0 0.5px 0.75px rgba(0,0,0,0.22))',
+              : isDarkProduct
+              ? 'drop-shadow(0 1px 1px rgba(0,0,0,0.45))'
+              : 'none',
           }}
         >
           <textPath href={`#${pathId}`} startOffset="50%" textAnchor="middle">
@@ -653,7 +669,9 @@ const RenderTextElement: React.FC<{ element: TextElement }> = ({ element }) => {
         WebkitTextStroke: strokeWidth && strokeColor ? `${strokeWidth}px ${strokeColor}` : undefined,
         textShadow: shadowColor
           ? `2px 2px ${shadowBlur || 3}px ${shadowColor}`
-          : '0 0.5px 1px rgba(0,0,0,0.2)',
+          : isDarkProduct
+          ? '0 1px 1.5px rgba(0,0,0,0.5)'
+          : 'none',
         lineHeight: 1.15,
         wordBreak: 'break-word',
         whiteSpace: 'pre-wrap',
@@ -665,29 +683,32 @@ const RenderTextElement: React.FC<{ element: TextElement }> = ({ element }) => {
   );
 };
 
-const RenderClipartElement: React.FC<{ element: ClipartElement }> = ({ element }) => {
+const RenderClipartElement: React.FC<RenderProps<ClipartElement>> = ({ element, isDarkProduct }) => {
   const svgWithColor = element.svgContent.replace(/currentColor/g, element.fill || '#000000');
   return (
     <div
       className="w-full h-full flex items-center justify-center select-none"
       style={{
-        filter: 'drop-shadow(0 0.5px 0.75px rgba(0,0,0,0.2))',
+        filter: isDarkProduct ? 'drop-shadow(0 1px 1px rgba(0,0,0,0.4))' : 'none',
       }}
       dangerouslySetInnerHTML={{ __html: svgWithColor }}
     />
   );
 };
 
-const RenderImageElement: React.FC<{ element: ImageElement }> = ({ element }) => {
+const RenderImageElement: React.FC<RenderProps<ImageElement>> = ({ element, isDarkProduct }) => {
   let filterStyle = 'none';
   if (element.filter === 'grayscale') filterStyle = 'grayscale(100%)';
   if (element.filter === 'sepia') filterStyle = 'sepia(100%)';
   if (element.filter === 'invert') filterStyle = 'invert(100%)';
 
+  const defaultFilter = isDarkProduct ? 'drop-shadow(0 1px 1px rgba(0,0,0,0.35))' : 'none';
   const combinedFilter =
     filterStyle === 'none'
-      ? 'drop-shadow(0 0.5px 0.75px rgba(0,0,0,0.18))'
-      : `${filterStyle} drop-shadow(0 0.5px 0.75px rgba(0,0,0,0.18))`;
+      ? defaultFilter
+      : defaultFilter === 'none'
+      ? filterStyle
+      : `${filterStyle} ${defaultFilter}`;
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
@@ -700,7 +721,7 @@ const RenderImageElement: React.FC<{ element: ImageElement }> = ({ element }) =>
   );
 };
 
-const RenderQRCodeElement: React.FC<{ element: QRCodeElement }> = ({ element }) => {
+const RenderQRCodeElement: React.FC<RenderProps<QRCodeElement>> = ({ element }) => {
   return (
     <div
       className="w-full h-full flex items-center justify-center select-none pointer-events-none"
@@ -709,13 +730,14 @@ const RenderQRCodeElement: React.FC<{ element: QRCodeElement }> = ({ element }) 
   );
 };
 
-const RenderRosterElement: React.FC<{ element: RosterElement }> = ({ element }) => {
+const RenderRosterElement: React.FC<RenderProps<RosterElement>> = ({ element, isDarkProduct }) => {
   return (
     <div
       className="w-full h-full flex flex-col items-center justify-center select-none"
       style={{
         fontFamily: element.fontFamily || "'Bebas Neue', sans-serif",
         color: element.fill || '#ffffff',
+        textShadow: isDarkProduct ? '0 1px 1px rgba(0,0,0,0.45)' : 'none',
       }}
     >
       <div className="text-sm font-bold tracking-widest uppercase">

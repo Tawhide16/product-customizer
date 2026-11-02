@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Product, ProductColor, ProductSide, DesignElement } from '@/types/customizer';
+import { Product, ProductColor, ProductSide, DesignElement, TextElement, ClipartElement, ImageElement } from '@/types/customizer';
 import { ProductMockupSvg } from '@/components/Mockups/ProductMockupSvg';
 import { ProductSurfaceOverlay } from '@/components/Mockups/ProductSurfaceOverlay';
 import { X, Download, Share2, Check, Sparkles } from 'lucide-react';
@@ -58,8 +58,8 @@ export const RealisticPreviewModal: React.FC<RealisticPreviewModalProps> = ({
         </div>
 
         {/* Realistic Stage */}
-        <div className="relative p-8 flex items-center justify-center bg-radial from-white to-zinc-100 min-h-[460px]">
-          <div className="relative w-[380px] h-[380px] shadow-2xl rounded-2xl overflow-hidden bg-white/40 p-2 border border-zinc-200/60">
+        <div className="relative p-8 flex items-center justify-center bg-radial from-zinc-100 to-zinc-200 min-h-[460px]">
+          <div className="relative w-[380px] h-[380px] flex items-center justify-center">
             {/* Mockup */}
             <ProductMockupSvg mockupKey={activeSide.mockupSvg} colorHex={activeColor.hex} sideId={activeSide.id} />
 
@@ -85,10 +85,11 @@ export const RealisticPreviewModal: React.FC<RealisticPreviewModalProps> = ({
                         left: `${el.x}%`,
                         top: `${el.y}%`,
                         width: `${el.width}%`,
-                        height: el.type === 'text' && !el.isCurved ? 'auto' : (el.height ? `${el.height}%` : 'auto'),
+                        height: el.type === 'text' && !(el as TextElement).isCurved ? 'auto' : (el.height ? `${el.height}%` : 'auto'),
                         transform: `rotate(${el.rotation}deg)`,
                         transformOrigin: 'center center',
-                        opacity: el.opacity ?? 1,
+                        opacity: el.opacity ?? (activeColor.dark ? 0.98 : 0.95),
+                        mixBlendMode: activeColor.dark ? 'normal' : 'multiply',
                       }}
                     >
                       {el.type === 'text' && (
@@ -102,7 +103,11 @@ export const RealisticPreviewModal: React.FC<RealisticPreviewModalProps> = ({
                             fontStyle: el.isItalic ? 'italic' : 'normal',
                             textDecoration: el.isUnderline ? 'underline' : 'none',
                             WebkitTextStroke: el.strokeWidth && el.strokeColor ? `${el.strokeWidth * 0.5}px ${el.strokeColor}` : undefined,
-                            textShadow: el.shadowColor ? `1px 1px 2px ${el.shadowColor}` : undefined,
+                            textShadow: el.shadowColor
+                              ? `1px 1px 2px ${el.shadowColor}`
+                              : activeColor.dark
+                              ? '0 1px 1.5px rgba(0,0,0,0.5)'
+                              : 'none',
                             lineHeight: 1.15,
                             wordBreak: 'break-word',
                             whiteSpace: 'pre-wrap',
